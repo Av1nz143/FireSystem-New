@@ -1,0 +1,195 @@
+<br><br>
+<div data-students="<%= @students.to_json %>" id="students-data"></div>
+
+<div class="col-md-12">
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Students</h3>
+    </div>
+
+    <div class="col-md-6">
+      <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#add-new-student">Add new Student</button>
+    </div>
+  </div>
+  <hr>
+</div>
+
+<div class="col-md-12">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">TIN</th>
+        <th scope="col">Address</th>
+        <th scope="col">1098T-1</th>
+        <th scope="col">1098T-2</th>
+        <th scope="col">1098T-3</th>
+        <th scope="col">1098T-4</th>
+        <th scope="col">1098T-5</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="student in students">
+        <td>{{ student.name }}</td>
+        <td>{{ student.tax_identification_number }}</td>
+        <td>{{ student.address_1 }} {{ student.address_2 }}, {{ student_city }} {{ student_state }} {{ student.zip_code }}</td>
+        <td>{{ student.payment_amount_1 }}</td>
+        <td>{{ student.payment_amount_2 }}</td>
+        <td>{{ student.payment_amount_3 }}</td>
+        <td>{{ student.payment_amount_4 }}</td>
+        <td>{{ student.payment_amount_5 }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="add-new-student" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <form @submit:prevent="NewStudent">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Add new Student</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Form -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputEmail4">Name</label>
+              <input type="text" class="form-control" id="inputEmail4" placeholder="Name" v-model="student.name" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword4">TIN</label>
+              <input type="text" class="form-control" id="inputPassword4" placeholder="TIN / SSN" v-model="student.tax_identification_number" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="address1">Address 1</label>
+              <input type="text" class="form-control" id="address1" placeholder="Address 1" v-model="student.address_1" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="address2">Address 2</label>
+              <input type="text" class="form-control" id="address2" placeholder="Address 2" v-model="student.address_2" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="city">City</label>
+              <input type="text" class="form-control" id="city" placeholder="City" v-model="student.city" required>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="state">State</label>
+              <input type="text" class="form-control" id="state" placeholder="State" v-model="student.state" required>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="zip_code">Zip Code</label>
+              <input type="text" class="form-control" id="zip_code" placeholder="Zip Code" v-model="student.zip_code" required>
+            </div>
+          </div>
+
+          <hr>
+          <h5>1098T Payment Amounts</h5>
+          <hr>
+
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label for="payment_amount_1">1098T-1</label>
+              <input type="text" class="form-control" id="payment_amount_1" v-model="student.payment_amount_1">
+            </div>
+            <div class="form-group col-md-2">
+              <label for="payment_amount_2">1098T-2</label>
+              <input type="text" class="form-control" id="payment_amount_2" v-model="student.payment_amount_2">
+            </div>
+
+            <div class="form-group col-md-2">
+              <label for="payment_amount_3">1098T-3</label>
+              <input type="text" class="form-control" id="payment_amount_3" v-model="student.payment_amount_3">
+            </div>
+
+            <div class="form-group col-md-2">
+              <label for="payment_amount_4">1098T-4</label>
+              <input type="text" class="form-control" id="payment_amount_4" v-model="student.payment_amount_4">
+            </div>
+
+            <div class="form-group col-md-2">
+              <label for="payment_amount_5">1098T-5</label>
+              <input type="text" class="form-control" id="payment_amount_5" v-model="student.payment_amount_5">
+            </div>
+          </div>
+
+          <!-- /Form -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" @click="NewStudent()">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+  <script type='text/javascript'>
+    window.onload = function() {
+      var element = document.getElementById("students-data");
+      var app = new Vue({
+        el: ".dashboard",
+        data: {
+          students: JSON.parse(element.dataset.students),
+          student: {
+            name: null,
+            tax_identification_number: null,
+            address_1: null,
+            address_2: null,
+            city: null,
+            zip_code: null,
+            state: null,
+            payment_amount_1: null,
+            payment_amount_2: null,
+            payment_amount_3: null,
+            payment_amount_4: null,
+            payment_amount_5: null,
+          },
+          modal: false,
+          flash: {
+            type: null,
+            message: null
+          }
+        },
+        methods: {
+          NewStudent() {
+            var self = this
+            axios.post('/dashboard/students', { student: this.student })
+            .then(function (response) {
+              self.students.push(response.data.student)
+              self.flash = {
+                type: 'success',
+                message: response.data.message
+              }
+            })
+            .catch(function (error) {
+              self.flash = {
+                type: 'error',
+                message: response.data.message
+              }
+            });
+          },
+
+          emptyFlash: function() {
+            this.flash = {
+              type: null,
+              message: null
+            }
+          }
+        }
+      });
+    };
+  </script>
+
+<% end %>

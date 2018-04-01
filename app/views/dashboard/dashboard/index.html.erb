@@ -1,0 +1,108 @@
+</br></br>
+<div data-university="<%= @university.to_json %>" id="university-data"></div>
+
+<div class="col-md-8" v-if="flash.message">
+  <div class="alert alert-dismissible fade show" role="alert"
+    v-bind:class="{ 'alert-success': flash.type == 'success', 'alert-warning': flash.type == 'error' }" >
+    {{ flash.message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="emptyFlash">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>
+
+<div class="col-md-8">
+  <form @submit.prevent ="CreateUniversity">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input v-model="university.name" type="text" class="form-control" id="name" placeholder="University Name">
+      <small id="emailHelp" class="form-text text-muted"></small>
+    </div>
+    <div class="form-group">
+      <label for="address-1">Address1</label>
+      <input v-model="university.address_1" type="text" class="form-control" id="address-1" placeholder="123 Main St">
+    </div>
+
+    <div class="form-group">
+      <label for="address-2">Address2</label>
+      <input v-model="university.address_2" type="text" class="form-control" id="address-2" placeholder="Suite 100">
+    </div>
+
+    <div class="form-group">
+      <label for="city">City</label>
+      <input v-model="university.city" type="text" class="form-control" id="city" placeholder="Oakland">
+    </div>
+
+    <div class="form-group">
+      <label for="state">State</label>
+      <input v-model="university.state" type="text" class="form-control" id="state" placeholder="California">
+    </div>
+
+    <div class="form-group">
+      <label for="zip_code">Zip Code</label>
+      <input v-model="university.zip_code" type="text" class="form-control" id="zip_code" placeholder="91111">
+    </div>
+
+    <div class="form-group">
+      <label for="country">Country</label>
+      <input v-model="university.country" type="text" class="form-control" id="country" placeholder="US">
+    </div>
+
+    <div class="form-group">
+      <label for="telephone_number">Phone Number</label>
+      <input v-model="university.telephone_number" type="text" class="form-control" id="telephone_number" placeholder="111-11-1111">
+    </div>
+
+    <div class="form-group">
+      <label for="tax_identification_number">Tax Identification Number</label>
+      <input v-model="university.tax_identification_number" type="text" class="form-control" id="tax_identification_number" placeholder="">
+    </div>
+    <button type="submit" class="btn btn-primary">Save University Information</button>
+  </form>
+</div>
+
+
+<% content_for :javascript do %>
+  <script type='text/javascript'>
+    var element = document.getElementById("university-data");
+
+    window.onload = function() {
+      var app = new Vue({
+        el: ".dashboard",
+        data: {
+          university: JSON.parse(element.dataset.university),
+          flash: {
+            type: null,
+            message: null
+          }
+        },
+        methods: {
+          CreateUniversity() {
+            var self = this
+            axios.post('/dashboard/university', { university: this.university })
+            .then(function (response) {
+              self.flash = {
+                type: 'success',
+                message: response.data.message
+              }
+            })
+            .catch(function (error) {
+              self.flash = {
+                type: 'error',
+                message: response.data.message
+              }
+            });
+          },
+
+          emptyFlash: function() {
+            this.flash = {
+              type: null,
+              message: null
+            }
+          }
+        }
+      });
+    };
+  </script>
+
+<% end %>
